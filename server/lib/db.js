@@ -152,6 +152,11 @@ export async function healImages() {
     for (const x of items) {
       if (x.imageSource && x.imageSource !== 'admin' && (x.gallery || []).some((g) => /loremflickr|picsum/.test(g))) { x.gallery = []; cleaned++; }
     }
+    // site/items.js'теги жаңыланган `wiki` сурамын колдонобуз (базада эскиси калышы мүмкүн)
+    const seedWiki = Object.fromEntries(siteItems.map((x) => [x.id, x.wiki]));
+    for (const x of items) {
+      if (!x.imageSource && seedWiki[x.id] && seedWiki[x.id] !== x.wiki) { x.wiki = seedWiki[x.id]; cleaned++; }
+    }
     const need = items.filter((x) => x.wiki && !x.imageSource).slice(0, 30);
     if (!need.length) { if (cleaned) await rawWrite('items', items); return cleaned; }
     const urls = await Promise.race([wikiImages(need.map((x) => x.wiki), 900, 4), new Promise((r) => setTimeout(() => r([]), 6500))]);

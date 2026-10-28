@@ -1,0 +1,30 @@
+/* ---------- Админ панель ---------- */
+.admin h1 { font-size: 2rem; }
+.admin-tabs { display: flex; gap: .4rem; overflow-x: auto; padding-bottom: .5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); scrollbar-width: thin; }
+.admin-tabs a { white-space: nowrap; padding: .55rem 1rem; border-radius: 999px; color: var(--text); font-weight: 500; font-size: .92rem; border: 1px solid transparent; }
+.admin-tabs a:hover { background: var(--surface-2); text-decoration: none; }
+.admin-tabs a.active { background: var(--green); color: #fff; }
+.admin-toolbar { display: flex; gap: .75rem; justify-content: space-between; flex-wrap: wrap; }
+.admin-toolbar .input { max-width: 320px; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
+.kpi { display: grid; gap: .1rem; padding: 1.1rem 1.2rem; position: relative; overflow: hidden; }
+.kpi::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--green); }
+.kpi:nth-child(3n+2)::after { background: var(--red); }
+.kpi:nth-child(3n)::after { background: var(--navy); }
+.kpi__icon { font-size: 1.4rem; }
+.kpi b { font-family: var(--serif); font-size: 1.7rem; line-height: 1.2; }
+.kpi small { color: var(--muted); }
+.live { display: flex; align-items: center; gap: .5rem; margin: 0; }
+.live__dot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 0 var(--green); animation: pulse 1.6s infinite; }
+@keyframes pulse { 70% { box-shadow: 0 0 0 10px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+.integrations { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+.integrations li { display: flex; justify-content: space-between; align-items: center; padding: .5rem .2rem; border-bottom: 1px dashed var(--border); }
+.integrations li > span:first-child { text-transform: capitalize; }
+.status-select { border-radius: 999px; font-size: .82rem; font-weight: 600; padding: .3rem .6rem !important; width: auto; }
+.chips-select { display: flex; flex-wrap: wrap; gap: .4rem; }
+.i18n-inputs { border: 1px solid var(--border); border-radius: 14px; padding: .75rem 1rem 1rem; display: grid; gap: .6rem; margin: 0; }
+.i18n-inputs legend { font-weight: 600; font-size: .9rem; padding: 0 .4rem; }
+.i18n-inputs textarea { min-height: 60px; }
+.image-upload { display: grid; gap: .5rem; align-content: start; }
+.image-upload .btn { justify-self: start; }
+.image-upload__preview { max-height: 120px; border-radius: 10px; object-fit: cover; }

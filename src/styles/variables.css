@@ -1,0 +1,47 @@
+/* Дизайн токендери: Италиянын түстөрү (жашыл, ак, кызыл) + күн/түн режимдери */
+:root {
+  --green: #008c45;
+  --green-600: #00733a;
+  --green-900: #0b3d2e;
+  --red: #cd212a;
+  --red-600: #a91a22;
+  --gold: #c9a227;
+  --navy: #1d4e89;
+
+  --bg: #faf8f3;
+  --bg-alt: #f2efe6;
+  --surface: #ffffff;
+  --surface-2: #f7f5ef;
+  --text: #16201b;
+  --muted: #5d6b64;
+  --border: #e4e0d5;
+  --ring: rgba(0, 140, 69, 0.35);
+  --shadow-sm: 0 1px 2px rgba(16, 24, 20, 0.06), 0 1px 3px rgba(16, 24, 20, 0.05);
+  --shadow: 0 10px 30px -12px rgba(16, 24, 20, 0.18);
+  --shadow-lg: 0 24px 60px -20px rgba(11, 61, 46, 0.35);
+
+  --radius: 16px;
+  --radius-sm: 10px;
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --header-h: 72px;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+}
+
+[data-theme='dark'] {
+  --bg: #0d1512;
+  --bg-alt: #111c18;
+  --surface: #15211c;
+  --surface-2: #1b2a24;
+  --text: #e7ece9;
+  --muted: #9aaba3;
+  --border: #26372f;
+  --ring: rgba(46, 204, 113, 0.35);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
+  --green: #1fb865;
+  --green-600: #19a057;
+  --red: #e5484d;
+  color-scheme: dark;
+}

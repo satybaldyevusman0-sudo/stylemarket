@@ -110,8 +110,8 @@ async function rawWrite(col, value) {
 }
 
 function defaultAdmin() {
-  const email = process.env.ADMIN_EMAIL || (process.env.VERCEL ? null : 'admin@site.kg');
-  const password = process.env.ADMIN_PASSWORD || (process.env.VERCEL ? null : 'Admin12345!');
+  const email = process.env.ADMIN_EMAIL || 'admin@site.kg';
+  const password = process.env.ADMIN_PASSWORD || 'Admin12345!';
   if (!email || !password) return [];
   return [{
     id: randomId('u_'), name: 'Администратор', email: email.toLowerCase(),
@@ -180,15 +180,52 @@ const seeds = {
   messages: () => []
 };
 
+// Жаңы деплойдон кийин site/items.js'теги оңдоолор эски базага да автоматтык түрдө кошулат.
+// Админ өзгөрткөн (updatedAt бар) же өзү кошкон позицияларга тийбейт.
+export const CATALOG_VERSION = '2026-10-28.2';
+let catalogSynced = false;
+const isSeedOrigin = (x) => /T00:00:00\.000Z$/.test(x.createdAt || '');
+async function syncCatalog(items) {
+  catalogSynced = true;
+  try {
+    const meta = (await rawRead('meta')) || {};
+    if (meta.catalog === CATALOG_VERSION) return items;
+    const seedIds = new Set(siteItems.map((x) => x.id));
+    const byId = new Map(items.map((x) => [x.id, x]));
+    const next = items.filter((x) => seedIds.has(x.id) || !isSeedOrigin(x) || x.updatedAt);
+    siteItems.forEach((s, i) => {
+      const cur = byId.get(s.id);
+      const createdAt = new Date(Date.UTC(2026, 9, 1 + (i % 27))).toISOString();
+      if (!cur) { next.push({ ...s, createdAt }); return; }
+      if (cur.updatedAt) return;
+      const keep = cur.imageSource ? { image: cur.image, imageSource: cur.imageSource, gallery: cur.gallery } : {};
+      Object.assign(cur, { ...s, ...keep, createdAt: cur.createdAt || createdAt });
+    });
+    await rawWrite('items', next);
+    await rawWrite('meta', { ...meta, catalog: CATALOG_VERSION });
+    return next;
+  } catch {
+    return items;
+  }
+}
+
 export const COLLECTIONS = Object.keys(seeds);
 const seeding = {};
 
 export async function all(col) {
   if (!seeds[col]) throw new Error('Unknown collection ' + col);
   let items = await rawRead(col);
+  if (col === 'items' && Array.isArray(items) && items.some((x) => !/^[a-z0-9]/.test(x.id || ''))) {
+    // эски базада ID'си бош калган позицияларды оңдоо (аталышы боюнча баштапкы ID берилет)
+    const key = (t) => JSON.stringify(t);
+    items.forEach((x, i) => { if (!/^[a-z0-9]/.test(x.id || '')) x.id = siteItems.find((s) => key(s.title) === key(x.title))?.id || `item-${i + 1}`; });
+    await rawWrite(col, items);
+  }
+  if (col === 'items' && Array.isArray(items) && !catalogSynced) items = await syncCatalog(items);
   if (items === null) {
     items = await (seeding[col] ||= Promise.resolve(seeds[col]()).finally(() => { delete seeding[col]; }));
     await rawWrite(col, items);
+    if (col === 'items') { catalogSynced = true; try { await rawWrite('meta', { ...((await rawRead('meta')) || {}), catalog: CATALOG_VERSION }); } catch { /* милдеттүү эмес */ } }
   }
   return items;
 }

@@ -20,6 +20,8 @@ function cleanI18n(v) {
 }
 
 const CATS = site.categories.map((c) => c.id);
+const TR = { а: 'a', б: 'b', в: 'v', г: 'g', д: 'd', е: 'e', ё: 'yo', ж: 'zh', з: 'z', и: 'i', й: 'y', к: 'k', л: 'l', м: 'm', н: 'n', ң: 'ng', о: 'o', ө: 'o', п: 'p', р: 'r', с: 's', т: 't', у: 'u', ү: 'u', ф: 'f', х: 'h', ц: 'ts', ч: 'ch', ш: 'sh', щ: 'sch', ъ: '', ы: 'y', ь: '', э: 'e', ю: 'yu', я: 'ya' };
+const translit = (s = '') => s.toLowerCase().split('').map((c) => (c in TR ? TR[c] : c)).join('');
 const tt = (v) => (typeof v === 'string' ? v : v?.ky || '');
 
 function itemInput(body) {
@@ -70,7 +72,7 @@ function crud(r, col, toInput, idFrom) {
 }
 
 export default function adminRoutes(r) {
-  crud(r, 'items', itemInput, (i) => slug(tt(i.title).normalize('NFKD').replace(/[^\x00-\x7F]/g, '')) || 'item');
+  crud(r, 'items', itemInput, (i) => slug(translit(tt(i.title) || i.title.ru || i.title.en).replace(/[^\x00-\x7F]/g, '')) || 'item');
   crud(r, 'plans', packageInput);
 
   r.get('/api/admin/users', requireAdmin, async (ctx) => send(ctx.res, 200, { items: (await db.all('users')).map((u) => ({ ...publicUser(u), blocked: !!u.blocked })) }));

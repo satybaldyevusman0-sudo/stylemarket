@@ -5,6 +5,7 @@ import { validate, rules } from '../lib/validate.js';
 import { rateLimit } from '../lib/security.js';
 import { status, notifyAll, exchangeRates } from '../lib/integrations.js';
 import { chatAnswer } from '../lib/chatbot.js';
+import LONG from '../../site/long.js';
 
 const contactLimit = rateLimit('contact', 5);
 const chatLimit = rateLimit('chat', 30);
@@ -75,7 +76,7 @@ export default function publicRoutes(r) {
     if (!x) throw new HttpError(404, 'Табылган жок');
     const m = ratingMap(await db.all('reviews'));
     const all = (await db.all('items')).filter((y) => y.category === x.category && y.id !== x.id).slice(0, 4).map((y) => withRating(y, m));
-    send(ctx.res, 200, { ...withRating(x, m), related: all });
+    send(ctx.res, 200, { ...withRating(x, m), long: x.long || LONG[x.id] || null, related: all });
   });
 
   r.get('/api/plans', async (ctx) => send(ctx.res, 200, { items: await db.all('plans') }));

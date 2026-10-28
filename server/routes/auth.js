@@ -11,7 +11,7 @@ const loginLimit = rateLimit('login', 10);
 const registerLimit = rateLimit('register', 5);
 
 function issue(res, user, status = 200) {
-  const token = signJwt({ sub: user.id, role: user.role });
+  const token = signJwt({ sub: user.id, role: user.role, name: user.name, email: user.email, avatar: user.avatar || '', provider: user.provider || 'local' });
   send(res, status, { user: publicUser(user) }, { 'Set-Cookie': cookie('token', token, { maxAge: WEEK }) });
 }
 
@@ -21,7 +21,12 @@ export default function authRoutes(r) {
     const data = validate(await ctx.body(), { name: rules.str(2, 60), email: rules.email(), password: rules.password() });
     const email = data.email.toLowerCase();
     const users = await db.all('users');
-    if (users.some((u) => u.email === email)) throw new HttpError(409, 'Бул email менен аккаунт мурунтан бар', { email: 'Email бош эмес' });
+    const existing = users.find((u) => u.email === email);
+    if (existing && existing.restored && !existing.passwordHash) {
+      const user = await db.update('users', existing.id, { name: data.name, passwordHash: hashPassword(data.password), restored: false });
+      return issue(ctx.res, user, 201);
+    }
+    if (existing) throw new HttpError(409, 'Бул email менен аккаунт мурунтан бар', { email: 'Email бош эмес' });
     const user = await db.insert('users', { name: data.name, email, passwordHash: hashPassword(data.password), role: 'user', provider: 'local' });
     issue(ctx.res, user, 201);
   });
@@ -80,7 +85,7 @@ export default function authRoutes(r) {
       let user = (await db.all('users')).find((u) => u.email === profile.email);
       if (!user) user = await db.insert('users', { name: profile.name, email: profile.email, avatar: profile.avatar, role: 'user', provider: p });
       if (user.blocked) throw new HttpError(403, 'Аккаунт бөгөттөлгөн');
-      const token = signJwt({ sub: user.id, role: user.role });
+      const token = signJwt({ sub: user.id, role: user.role, name: user.name, email: user.email, avatar: user.avatar || '', provider: user.provider || 'local' });
       ctx.res.writeHead(302, { Location: `${origin}/profile`, 'Set-Cookie': [cookie('token', token, { maxAge: WEEK }), cookie('oauth_state', '', { maxAge: 0 })] });
       ctx.res.end();
     } catch (e) {

@@ -7,6 +7,14 @@ export async function currentUser(ctx) {
   if (ctx.user !== undefined) return ctx.user;
   const payload = verifyJwt(tokenFromRequest(ctx.req));
   ctx.user = payload ? await db.get('users', payload.sub) : null;
+  // Убактылуу базада (Vercel /tmp) колдонуучу жоголуп кетсе — кол коюлган JWT'ден калыбына келтиребиз
+  if (payload && !ctx.user && payload.email) {
+    const users = await db.all('users');
+    ctx.user = users.find((u) => u.email === payload.email) || null;
+    if (!ctx.user) {
+      ctx.user = await db.insert('users', { id: payload.sub, name: payload.name || payload.email, email: payload.email, avatar: payload.avatar || '', role: payload.role === 'admin' ? 'admin' : 'user', provider: payload.provider || 'local', restored: true });
+    }
+  }
   if (ctx.user?.blocked) ctx.user = null;
   return ctx.user;
 }

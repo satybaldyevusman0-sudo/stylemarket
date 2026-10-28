@@ -42,7 +42,7 @@ git push -u origin main
 ## Vercel'ге жарыялоо
 
 1. vercel.com → Add New → Project → `stylemarket` репозиторийин тандаңыз (Framework: Vite).
-2. Settings → Environment Variables: `JWT_SECRET` (кеминде 32 белги), `ADMIN_EMAIL`, `ADMIN_PASSWORD`.
+2. (Милдеттүү эмес) Settings → Environment Variables: `JWT_SECRET` (кеминде 32 белги), `ADMIN_EMAIL`, `ADMIN_PASSWORD`. Коюлбаса да сайт катасыз иштейт: демо админ `admin@site.kg` / `Admin12345!`, JWT ачкычы долбоорго автоматтык түзүлөт. Коопсуздук үчүн кийин өз маанилериңизди коюңуз.
 3. Storage → **Blob** (же Upstash Redis) кошуңуз — `BLOB_READ_WRITE_TOKEN` автоматтык коюлат. Болбосо катталуулар жана заказдар өчүп калышы мүмкүн.
 4. Deploy. Андан кийин `APP_URL` = сайттын дареги, кайра Deploy.
 

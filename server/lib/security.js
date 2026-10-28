@@ -4,13 +4,15 @@ import { HttpError, parseCookies, clientIp } from './http.js';
 
 const DEV_SECRET = 'dev-only-secret-change-me-in-production-please';
 
+export const jwtSecretIsDefault = () => !(process.env.JWT_SECRET && process.env.JWT_SECRET.length >= 32);
+
 export function jwtSecret() {
   const s = process.env.JWT_SECRET;
   if (s && s.length >= 32) return s;
-  if (process.env.NODE_ENV === 'production' || process.env.VERCEL) {
-    throw new HttpError(500, 'Сервер туура жөндөлгөн эмес: JWT_SECRET (кеминде 32 белги) коюлушу керек');
-  }
-  return DEV_SECRET;
+  // JWT_SECRET коюлбаса да сайт иштейт: долбоорго туруктуу ачкыч түзүлөт (бардык серверлерде бирдей).
+  // Коопсуздук үчүн Vercel → Settings → Environment Variables'ке өз JWT_SECRET'иңизди кошуңуз.
+  const seed = process.env.VERCEL_PROJECT_ID || process.env.VERCEL_GIT_REPO_SLUG || process.env.SITE_SLUG || 'local';
+  return crypto.createHash('sha256').update(`${DEV_SECRET}:${seed}`).digest('hex');
 }
 
 export function hashPassword(password) {

@@ -81,7 +81,7 @@ export default function ItemDetail() {
           <section className="card">
             <h2>{t('item.desc')}</h2>
             <p className="lead">{tx(x.desc)}</p>
-            {x.long && <p>{tx(x.long)}</p>}
+            {x.long && String(tx(x.long) || '').split(/\n\n+/).map((para, i) => <p key={i} className="detail-long">{para}</p>)}
             {x.tags?.length > 0 && <div className="tags">{x.tags.map((g) => <Link key={g} className="tag" to={`/catalog?q=${encodeURIComponent(g)}`}>#{g}</Link>)}</div>}
             {x.source && <p className="small muted">{t('common.source')}: <a href={x.source} target="_blank" rel="noopener noreferrer">{x.source.replace(/^https?:\/\/(www\.)?/, '').split('/')[0]} ↗</a></p>}
           </section>

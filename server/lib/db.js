@@ -1,13 +1,15 @@
 // Маалымат базасы адаптери.
 //  1) UPSTASH_REDIS_REST_URL + TOKEN (же Vercel KV_REST_API_URL + TOKEN) — Vercel'де туруктуу сактоо.
-//  2) Локалдык компьютерде — server/data/db.json файлы.
-//  3) Vercel'де база жок болсо — убактылуу эс (/tmp), маалымат өчүп калышы мүмкүн (админде эскертүү чыгат).
+//  2) BLOB_READ_WRITE_TOKEN (Vercel Blob) — Vercel'де туруктуу сактоо (JSON файлдар + эстеги кэш).
+//  3) Локалдык компьютерде — server/data/db.json файлы.
+//  4) Vercel'де база жок болсо — убактылуу эс (/tmp), маалымат өчүп калышы мүмкүн (админде эскертүү чыгат).
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import site from '../../site/config.js';
 import siteItems from '../../site/items.js';
 import { hashPassword, randomId } from './security.js';
+import { wikiImages } from '../../site/wiki.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PREFIX = `${site.slug}:`;
@@ -15,8 +17,11 @@ const PREFIX = `${site.slug}:`;
 const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
 const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
 
+const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN;
+
 function pickDriver() {
   if (REDIS_URL && REDIS_TOKEN) return 'redis';
+  if (BLOB_TOKEN) return 'blob';
   if (process.env.VERCEL) return 'tmp';
   return 'file';
 }
@@ -55,11 +60,41 @@ async function redis(command) {
   return data.result;
 }
 
+// ---------- Vercel Blob: ар бир коллекция — өзүнчө JSON файл, инстанс ичинде эстеги кэш ----------
+const blobCache = new Map();
+const blobPath = (col) => `db/${site.slug}/${col}.json`;
+let blobLib = null;
+const blob = async () => (blobLib ||= await import('@vercel/blob'));
+
+async function blobRead(col) {
+  if (blobCache.has(col)) return blobCache.get(col);
+  const { head } = await blob();
+  let value = null;
+  try {
+    const meta = await head(blobPath(col), { token: BLOB_TOKEN });
+    const r = await fetch(`${meta.url}?v=${Date.now()}`, { cache: 'no-store' });
+    if (r.ok) value = await r.json();
+  } catch (e) {
+    if (!/not.?found|does not exist/i.test(String(e?.message || e)) && e?.name !== 'BlobNotFoundError') throw e;
+  }
+  if (value !== null) blobCache.set(col, value);
+  return value;
+}
+async function blobWrite(col, value) {
+  blobCache.set(col, value);
+  const { put } = await blob();
+  await put(blobPath(col), JSON.stringify(value), {
+    access: 'public', addRandomSuffix: false, allowOverwrite: true,
+    contentType: 'application/json', cacheControlMaxAge: 60, token: BLOB_TOKEN
+  });
+}
+
 async function rawRead(col) {
   if (driver === 'redis') {
     const v = await redis(['GET', PREFIX + col]);
     return v ? JSON.parse(v) : null;
   }
+  if (driver === 'blob') return blobRead(col);
   const data = loadFile();
   return data[col] ?? null;
 }
@@ -69,6 +104,7 @@ async function rawWrite(col, value) {
     await redis(['SET', PREFIX + col, JSON.stringify(value)]);
     return;
   }
+  if (driver === 'blob') return blobWrite(col, value);
   loadFile()[col] = value;
   saveFile();
 }
@@ -84,8 +120,26 @@ function defaultAdmin() {
   }];
 }
 
+// Баштапкы каталог: `wiki` талаасы бар товарлардын сүрөтү Wikipedia API'ден алынат
+// (табылбаса — site/items.js'теги сүрөт калат). Бул бир гана жолу, база бош болгондо аткарылат.
+async function seedItems() {
+  const items = siteItems.map((x, i) => ({ ...x, createdAt: new Date(Date.UTC(2026, 9, 1 + (i % 27))).toISOString() }));
+  const need = items.filter((x) => x.wiki);
+  if (!need.length || process.env.NO_WIKI) return items;
+  const urls = await wikiImages(need.map((x) => x.wiki));
+  need.forEach((x, k) => {
+    if (urls[k]) {
+      const old = x.image;
+      x.image = urls[k];
+      x.imageSource = 'Wikipedia / Wikimedia Commons';
+      x.gallery = [urls[k], ...(x.gallery || []).filter((g) => g !== urls[k]), ...(old ? [old] : [])].slice(0, 4);
+    }
+  });
+  return items;
+}
+
 const seeds = {
-  items: () => siteItems.map((x, i) => ({ ...x, createdAt: new Date(Date.UTC(2026, 9, 1 + (i % 27))).toISOString() })),
+  items: seedItems,
   plans: () => site.plans || [],
   users: defaultAdmin,
   reviews: () => [],
@@ -96,12 +150,13 @@ const seeds = {
 };
 
 export const COLLECTIONS = Object.keys(seeds);
+const seeding = {};
 
 export async function all(col) {
   if (!seeds[col]) throw new Error('Unknown collection ' + col);
   let items = await rawRead(col);
   if (items === null) {
-    items = seeds[col]();
+    items = await (seeding[col] ||= Promise.resolve(seeds[col]()).finally(() => { delete seeding[col]; }));
     await rawWrite(col, items);
   }
   return items;

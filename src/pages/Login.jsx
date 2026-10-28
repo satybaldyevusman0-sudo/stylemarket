@@ -52,7 +52,7 @@ export default function Login() {
         <div className="divider"><span>{t('auth.or')}</span></div>
         <OAuthButtons />
         <p className="center">{t('auth.noAccount')} <Link to={`/register${query.next ? `?next=${encodeURIComponent(query.next)}` : ''}`}>{t('nav.register')}</Link></p>
-        {import.meta.env.DEV && <p className="muted small center">{t('auth.demo')}</p>}
+        <p className="muted small center">{t('auth.demo')}</p>
       </form>
     </section>
   );

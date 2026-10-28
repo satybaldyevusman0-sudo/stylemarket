@@ -8,6 +8,7 @@ import CategoryGrid from '../components/catalog/CategoryGrid.jsx';
 import ContactButtons from '../components/ContactButtons.jsx';
 import { GridSkeleton, Skeleton } from '../components/ui/Skeleton.jsx';
 import { ErrorState } from '../components/ui/States.jsx';
+import { useWikiImage } from '../lib/useWikiImage.js';
 
 export default function Home() {
   const { t, tx } = useI18n();
@@ -15,10 +16,12 @@ export default function Home() {
   const info = useFetch('/api/site');
   const popular = useFetch('/api/items?sort=popular&limit=8');
   const newest = useFetch('/api/items?sort=new&limit=4');
+  const heroWiki = useWikiImage(site.heroWiki, 1600);
+  const heroImg = !site.heroWiki ? site.heroImage : heroWiki === undefined ? '' : (heroWiki || site.heroImage);
 
   return (
     <>
-      <section className="hero" style={{ '--hero-img': `url("${site.heroImage}")` }}>
+      <section className="hero" style={{ '--hero-img': heroImg ? `url("${heroImg}")` : 'none' }}>
         <div className="container hero__inner">
           <span className="pill">{site.logo} {tx(site.text.tagline)}</span>
           <h1>{tx(site.text.heroTitle)}</h1>

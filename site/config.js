@@ -15,6 +15,7 @@ export default {
     "dark": "#2a0a1a"
   },
   "heroImage": "https://loremflickr.com/1600/900/fashion,clothes?lock=121",
+  "heroWiki": "Fashion show",
   "contacts": {
     "phone": "+996 774 054 601",
     "instagram": "satyba1dyev18",
@@ -31,54 +32,54 @@ export default {
       "en": "Online fashion store"
     },
     "heroTitle": {
-      "ky": "Жаңы сезон — жаңы стиль",
-      "ru": "Новый сезон — новый стиль",
-      "en": "New season — new style"
+      "ky": "Стилиңизди табыңыз — StyleMarket менен",
+      "ru": "Найдите свой стиль — со StyleMarket",
+      "en": "Find your style with StyleMarket"
     },
     "heroText": {
-      "ky": "Аялдар, эркектер жана балдар үчүн кийимдер, бут кийим жана аксессуарлар. Бишкек боюнча өлчөп көрүү менен жеткирүү.",
-      "ru": "Одежда, обувь и аксессуары для женщин, мужчин и детей. Доставка с примеркой по Бишкеку.",
-      "en": "Clothes, shoes and accessories for women, men and kids. Delivery with try-on in Bishkek."
+      "ky": "Аялдар, эркектер жана балдар үчүн кийим, бут кийим, аксессуарлар жана кыргыз улуттук кийимдери. Кийип көрүп, ылайык келбесе кайтаруу бекер.",
+      "ru": "Одежда для женщин, мужчин и детей, обувь, аксессуары и кыргызская национальная одежда. Примерка и бесплатный возврат.",
+      "en": "Clothing for women, men and kids, shoes, accessories and Kyrgyz national wear. Try-on and free returns."
     },
     "catalog": {
       "ky": "Каталог",
       "ru": "Каталог",
-      "en": "Catalog"
+      "en": "Catalogue"
     },
     "catalogText": {
-      "ky": "Өлчөм, баа жана категория боюнча",
-      "ru": "По размеру, цене и категории",
-      "en": "By size, price and category"
+      "ky": "Категория, өлчөм жана баа боюнча тандаңыз",
+      "ru": "Выбирайте по категории, размеру и цене",
+      "en": "Filter by category, size and price"
     },
     "search": {
-      "ky": "Издөө: куртка, кроссовка…",
-      "ru": "Поиск: куртка, кроссовки…",
-      "en": "Search: jacket, sneakers…"
+      "ky": "Издөө: пуховик, кроссовка, калпак…",
+      "ru": "Поиск: пуховик, кроссовки, калпак…",
+      "en": "Search: puffer, sneakers, kalpak…"
     },
     "plans": {
-      "ky": "Стилист кызматы",
+      "ky": "Стилист кызматтары",
       "ru": "Услуги стилиста",
-      "en": "Stylist"
+      "en": "Stylist services"
     },
     "plansText": {
-      "ky": "Жеке стиль жана гардероб",
-      "ru": "Личный стиль и гардероб",
-      "en": "Personal style & wardrobe"
+      "ky": "Жеке шопинг жана белек сертификаттары",
+      "ru": "Персональный шопинг и подарочные сертификаты",
+      "en": "Personal shopping and gift cards"
     },
     "booking": {
-      "ky": "Өлчөп көрүү",
+      "ky": "Кийип көрүү",
       "ru": "Примерка",
-      "en": "Try-on"
+      "en": "Fitting"
     },
     "bookingText": {
-      "ky": "Шоурумда өлчөп көрүүгө жазылыңыз",
+      "ky": "Шоурумда кийип көрүүгө жазылыңыз",
       "ru": "Запишитесь на примерку в шоуруме",
-      "en": "Book a showroom try-on"
+      "en": "Book a fitting in our showroom"
     },
     "bookBtn": {
-      "ky": "Өлчөп көрүүгө жазылуу",
+      "ky": "Кийип көрүүгө жазылуу",
       "ru": "Записаться на примерку",
-      "en": "Book try-on"
+      "en": "Book a fitting"
     },
     "buy": {
       "ky": "Корзинага",
@@ -86,9 +87,9 @@ export default {
       "en": "Add to cart"
     },
     "about": {
-      "ky": "StyleMarket — заманбап кийимдер Бишкекте.",
-      "ru": "StyleMarket — современная одежда в Бишкеке.",
-      "en": "StyleMarket — modern fashion in Bishkek."
+      "ky": "StyleMarket — Бишкектеги кийим-кече дүкөнү: заманбап бренддер жана кыргыз дизайнерлери.",
+      "ru": "StyleMarket — магазин одежды в Бишкеке: современные бренды и кыргызские дизайнеры.",
+      "en": "StyleMarket is a Bishkek fashion store with modern brands and Kyrgyz designers."
     }
   },
   "categories": [
@@ -99,8 +100,9 @@ export default {
         "ru": "Женщинам",
         "en": "Women"
       },
-      "icon": "👚",
-      "image": "https://loremflickr.com/800/600/woman,fashion?lock=1015"
+      "icon": "👗",
+      "wiki": "Dress",
+      "tags": "fashion,woman"
     },
     {
       "id": "men",
@@ -110,7 +112,8 @@ export default {
         "en": "Men"
       },
       "icon": "👔",
-      "image": "https://loremflickr.com/800/600/man,fashion?lock=983"
+      "wiki": "Suit",
+      "tags": "fashion,man"
     },
     {
       "id": "kids",
@@ -120,7 +123,8 @@ export default {
         "en": "Kids"
       },
       "icon": "🧒",
-      "image": "https://loremflickr.com/800/600/kids,clothes?lock=1044"
+      "wiki": "Children's clothing",
+      "tags": "kids,clothes"
     },
     {
       "id": "shoes",
@@ -130,7 +134,8 @@ export default {
         "en": "Shoes"
       },
       "icon": "👟",
-      "image": "https://loremflickr.com/800/600/sneakers?lock=1020"
+      "wiki": "Sneakers",
+      "tags": "shoes"
     },
     {
       "id": "acc",
@@ -140,24 +145,36 @@ export default {
         "en": "Accessories"
       },
       "icon": "👜",
-      "image": "https://loremflickr.com/800/600/handbag?lock=991"
+      "wiki": "Handbag",
+      "tags": "bag,accessories"
+    },
+    {
+      "id": "national",
+      "name": {
+        "ky": "Улуттук кийим",
+        "ru": "Национальная одежда",
+        "en": "National wear"
+      },
+      "icon": "🎩",
+      "wiki": "Kalpak",
+      "tags": "kyrgyz,felt"
     }
   ],
   "plans": [
     {
       "id": "stylist",
-      "icon": "💇",
+      "icon": "💃",
       "price": 2500,
       "popular": true,
       "title": {
         "ky": "Стилист менен шопинг (2 саат)",
         "ru": "Шопинг со стилистом (2 часа)",
-        "en": "Shopping with a stylist (2h)"
+        "en": "Shopping with a stylist (2 h)"
       },
       "desc": {
-        "ky": "Образ тандоо",
-        "ru": "Подбор образа",
-        "en": "Outfit selection"
+        "ky": "Образ тандоо жана кеңеш",
+        "ru": "Подбор образа и советы",
+        "en": "Outfit selection and advice"
       }
     },
     {
@@ -170,9 +187,9 @@ export default {
         "en": "Wardrobe audit"
       },
       "desc": {
-        "ky": "Үйдө, капсула түзүү",
-        "ru": "На дому, капсула",
-        "en": "At home, capsule wardrobe"
+        "ky": "Үйгө барып, 10 образ түзөбүз",
+        "ru": "Выезд на дом и 10 образов",
+        "en": "Home visit and 10 outfits"
       }
     },
     {
@@ -185,22 +202,20 @@ export default {
         "en": "Gift card 3000"
       },
       "desc": {
-        "ky": "Каалаган товарга",
-        "ru": "На любой товар",
-        "en": "For any item"
+        "ky": "6 ай жарактуу",
+        "ru": "Действует 6 месяцев",
+        "en": "Valid for 6 months"
       }
     }
   ],
   "booking": {
     "slots": [
-      "11:00",
+      "10:00",
       "12:00",
-      "13:00",
-      "15:00",
+      "14:00",
       "16:00",
-      "17:00",
       "18:00",
-      "19:00"
+      "20:00"
     ],
     "formats": [
       {
@@ -208,82 +223,90 @@ export default {
         "label": {
           "ky": "Шоурумда",
           "ru": "В шоуруме",
-          "en": "Showroom"
+          "en": "In showroom"
         }
       },
       {
-        "id": "courier",
+        "id": "home",
         "label": {
-          "ky": "Курьер менен (үйдө)",
-          "ru": "С курьером (дома)",
-          "en": "With courier (home)"
+          "ky": "Үйгө алып барабыз",
+          "ru": "Примерка на дому",
+          "en": "At home"
         }
       }
     ],
     "itemLabel": {
       "ky": "Товар",
       "ru": "Товар",
-      "en": "Item"
+      "en": "Product"
     },
     "sundayOff": false
   },
   "features": [
     {
-      "icon": "📏",
+      "icon": "👗",
       "title": {
-        "ky": "Өлчөп көрүү",
+        "ky": "Кийип көрүү",
         "ru": "Примерка",
         "en": "Try-on"
       },
       "text": {
-        "ky": "Курьер күтүп турат — жакпаса кайтарыңыз.",
-        "ru": "Курьер подождёт — не подошло, верните.",
-        "en": "Courier waits — return if it doesn't fit."
+        "ky": "Курьер күтүп турат.",
+        "ru": "Курьер подождёт.",
+        "en": "The courier waits."
       }
     },
     {
-      "icon": "🔁",
+      "icon": "↩️",
       "title": {
-        "ky": "14 күн алмаштыруу",
-        "ru": "Обмен 14 дней",
-        "en": "14-day exchange"
+        "ky": "Бекер кайтаруу",
+        "ru": "Бесплатный возврат",
+        "en": "Free returns"
       },
       "text": {
-        "ky": "Өлчөмү туура келбесе.",
-        "ru": "Если не подошёл размер.",
-        "en": "If the size is wrong."
-      }
-    },
-    {
-      "icon": "🧵",
-      "title": {
-        "ky": "Сапаттуу материалдар",
-        "ru": "Качественные материалы",
-        "en": "Quality fabrics"
-      },
-      "text": {
-        "ky": "Пахта, жүн, тери.",
-        "ru": "Хлопок, шерсть, кожа.",
-        "en": "Cotton, wool, leather."
+        "ky": "14 күн ичинде.",
+        "ru": "В течение 14 дней.",
+        "en": "Within 14 days."
       }
     },
     {
       "icon": "🇰🇬",
       "title": {
-        "ky": "Жергиликтүү бренддер",
-        "ru": "Местные бренды",
-        "en": "Local brands"
+        "ky": "Кыргыз дизайнерлери",
+        "ru": "Кыргызские дизайнеры",
+        "en": "Kyrgyz designers"
       },
       "text": {
-        "ky": "Кыргыз дизайнерлери.",
-        "ru": "Кыргызские дизайнеры.",
-        "en": "Kyrgyz designers."
+        "ky": "Улуттук кийимдер.",
+        "ru": "Национальная одежда.",
+        "en": "National wear."
+      }
+    },
+    {
+      "icon": "🚚",
+      "title": {
+        "ky": "1 күндө жеткирүү",
+        "ru": "Доставка за 1 день",
+        "en": "1-day delivery"
+      },
+      "text": {
+        "ky": "Бишкек боюнча.",
+        "ru": "По Бишкеку.",
+        "en": "Across Bishkek."
       }
     }
   ],
   "stats": [
     {
-      "value": "5",
+      "value": "28",
+      "label": {
+        "ky": "товар",
+        "ru": "товаров",
+        "en": "products"
+      }
+    },
+    {
+      "value": "6",
       "label": {
         "ky": "категория",
         "ru": "категорий",
@@ -291,27 +314,19 @@ export default {
       }
     },
     {
-      "value": "XS–3XL",
-      "label": {
-        "ky": "өлчөмдөр",
-        "ru": "размеры",
-        "en": "sizes"
-      }
-    },
-    {
       "value": "14 күн",
       "label": {
-        "ky": "алмаштыруу",
-        "ru": "обмен",
-        "en": "exchange"
+        "ky": "кайтаруу",
+        "ru": "возврат",
+        "en": "returns"
       }
     },
     {
-      "value": "1 күн",
+      "value": "4.9★",
       "label": {
-        "ky": "жеткирүү",
-        "ru": "доставка",
-        "en": "delivery"
+        "ky": "рейтинг",
+        "ru": "рейтинг",
+        "en": "rating"
       }
     }
   ],
@@ -329,7 +344,7 @@ export default {
     "color": {
       "ky": "Түсү",
       "ru": "Цвет",
-      "en": "Color"
+      "en": "Colour"
     },
     "season": {
       "ky": "Мезгил",
@@ -337,8 +352,8 @@ export default {
       "en": "Season"
     },
     "country": {
-      "ky": "Өндүрүүчү",
-      "ru": "Производство",
+      "ky": "Өндүрүүчү өлкө",
+      "ru": "Страна",
       "en": "Made in"
     }
   },
@@ -350,36 +365,48 @@ export default {
         "size"
       ],
       "answer": {
-        "ky": "Ар бир товардын бетинде өлчөмдөр жазылган; өлчөп көрүүгө жазылсаңыз болот.",
-        "ru": "Размеры указаны у каждого товара; можно записаться на примерку.",
-        "en": "Sizes are listed per item; book a try-on."
+        "ky": "Өлчөм таблицасы ар бир товардын барагында. Ылайык келбесе — бекер алмаштырабыз.",
+        "ru": "Таблица размеров — на странице товара. Не подошло — бесплатно обменяем.",
+        "en": "Size info is on each product page; free exchanges."
       },
-      "link": "/booking"
+      "link": "/catalog"
     },
     {
       "keys": [
-        "алмаш",
-        "обмен",
-        "exchange",
-        "кайтар"
+        "кайтар",
+        "возврат",
+        "return"
       ],
       "answer": {
-        "ky": "14 күндүн ичинде алмаштырса болот.",
-        "ru": "Обмен в течение 14 дней.",
-        "en": "14-day exchange."
+        "ky": "14 күндүн ичинде бекер кайтаруу.",
+        "ru": "Бесплатный возврат в течение 14 дней.",
+        "en": "Free returns within 14 days."
       },
       "link": "/contact"
+    },
+    {
+      "keys": [
+        "калпак",
+        "улуттук",
+        "националь"
+      ],
+      "answer": {
+        "ky": "Улуттук кийимдер \"Улуттук кийим\" категориясында.",
+        "ru": "Национальная одежда — в отдельной категории.",
+        "en": "National wear has its own category."
+      },
+      "link": "/catalog?category=national"
     }
   ],
   "priceNote": {
-    "ky": "Баалар Бишкек дүкөндөрүнө жакын, болжолдуу.",
-    "ru": "Цены ориентировочные.",
-    "en": "Approximate prices."
+    "ky": "Баалар Бишкектеги дүкөндөрдүн орточо баасына жакын.",
+    "ru": "Цены близки к средним по Бишкеку.",
+    "en": "Prices close to Bishkek averages."
   },
   "dataNote": {
-    "ky": "Баалар болжолдуу (28.10.2026).",
-    "ru": "Цены ориентировочные (28.10.2026).",
-    "en": "Approximate prices (28.10.2026)."
+    "ky": "Баалар болжолдуу (28.10.2026). Сүрөттөр: Wikipedia / Wikimedia Commons.",
+    "ru": "Цены ориентировочные (28.10.2026). Фото: Wikipedia.",
+    "en": "Approximate prices (28.10.2026). Photos: Wikipedia."
   },
   "sources": []
 };

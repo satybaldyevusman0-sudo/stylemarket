@@ -8,7 +8,7 @@ export default function CategoryGrid({ categories = [] }) {
     <div className="cat-grid">
       {categories.map((c) => (
         <Link key={c.id} to={`/catalog?category=${c.id}`} className="cat-tile">
-          <ItemImage src={c.image} alt={tx(c.name)} icon={c.icon} />
+          <ItemImage wiki={c.wiki} src={c.image} alt={tx(c.name)} icon={c.icon} label={tx(c.name)} />
           <span className="cat-tile__shade" />
           <span className="cat-tile__text">
             <b>{c.icon} {tx(c.name)}</b>

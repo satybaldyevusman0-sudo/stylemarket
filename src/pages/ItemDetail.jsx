@@ -43,7 +43,7 @@ export default function ItemDetail() {
       <Link to="/catalog" className="btn btn--ghost btn--sm">{t('item.back')}</Link>
       <div className="detail__top">
         <div className="gallery">
-          <ItemImage src={images[active]} alt={tx(x.title)} className="gallery__main" icon={cat?.icon} eager />
+          <ItemImage src={images[active]} alt={tx(x.title)} className="gallery__main" icon={cat?.icon} label={tx(x.title)} eager />
           {images.length > 1 && (
             <div className="gallery__thumbs">
               {images.map((src, i) => (

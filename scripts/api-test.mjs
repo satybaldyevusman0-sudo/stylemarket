@@ -69,7 +69,7 @@ ok(r.data.rating === 5, 'рейтинг');
 const buyable = (await guest('/api/items?limit=60')).data.items.find((x) => x.buyable !== false && x.price);
 const cartItems = [];
 if (buyable) cartItems.push({ kind: 'item', id: buyable.id, qty: 2 });
-const samePlan = plans.find((p) => (p.currency || buyable?.currency) === (buyable?.currency || p.currency));
+const samePlan = plans.find((p) => p.price > 0 && (p.currency || buyable?.currency) === (buyable?.currency || p.currency));
 if (samePlan && (!buyable || (samePlan.currency || 'KGS') === (buyable.currency || 'KGS'))) cartItems.push({ kind: 'plan', id: samePlan.id, qty: 1 });
 r = await user('/api/orders', { method: 'POST', body: { items: cartItems, name: 'Test', phone: '+996555123456', email, address: 'Бишкек' } });
 ok(r.status === 201 && r.data.order.total > 0, 'заказ', JSON.stringify(r.data).slice(0, 200));

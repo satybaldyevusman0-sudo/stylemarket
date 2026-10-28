@@ -126,16 +126,42 @@ async function seedItems() {
   const items = siteItems.map((x, i) => ({ ...x, createdAt: new Date(Date.UTC(2026, 9, 1 + (i % 27))).toISOString() }));
   const need = items.filter((x) => x.wiki);
   if (!need.length || process.env.NO_WIKI) return items;
-  const urls = await wikiImages(need.map((x) => x.wiki));
-  need.forEach((x, k) => {
-    if (urls[k]) {
-      const old = x.image;
-      x.image = urls[k];
-      x.imageSource = 'Wikipedia / Wikimedia Commons';
-      x.gallery = [urls[k], ...(x.gallery || []).filter((g) => g !== urls[k]), ...(old ? [old] : [])].slice(0, 4);
-    }
-  });
+  const urls = await wikiImages(need.map((x) => x.wiki), 900, 4);
+  need.forEach((x, k) => applyWiki(x, urls[k]));
   return items;
+}
+
+function applyWiki(x, url) {
+  if (!url) return false;
+  x.image = url;
+  x.imageSource = 'Wikipedia / Wikimedia Commons';
+  x.gallery = []; // кошумча сүрөттөр браузерде Wikimedia Commons'тон алынат
+  return true;
+}
+
+// "Айыктыруу": биринчи жолу табылбай калган сүрөттөрдү (Wikipedia убактылуу чектесе) кийинчерээк кайра издейт.
+// Админ өзү койгон сүрөткө тийбейт (imageSource коюлган). Инстанс ичинде 3 мүнөттө бир жолудан көп эмес.
+let lastHeal = 0;
+export async function healImages() {
+  if (process.env.NO_WIKI || Date.now() - lastHeal < 180000) return 0;
+  lastHeal = Date.now();
+  try {
+    const items = await all('items');
+    // эски базалардагы иштебеген loremflickr галереяларын тазалоо
+    let cleaned = 0;
+    for (const x of items) {
+      if (x.imageSource && x.imageSource !== 'admin' && (x.gallery || []).some((g) => /loremflickr|picsum/.test(g))) { x.gallery = []; cleaned++; }
+    }
+    const need = items.filter((x) => x.wiki && !x.imageSource).slice(0, 30);
+    if (!need.length) { if (cleaned) await rawWrite('items', items); return cleaned; }
+    const urls = await Promise.race([wikiImages(need.map((x) => x.wiki), 900, 4), new Promise((r) => setTimeout(() => r([]), 6500))]);
+    let changed = 0;
+    need.forEach((x, k) => { if (applyWiki(x, urls[k])) changed++; });
+    if (changed || cleaned) await rawWrite('items', items);
+    return changed;
+  } catch {
+    return 0;
+  }
 }
 
 const seeds = {

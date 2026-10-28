@@ -4,7 +4,8 @@ import { useFetch, useDocumentTitle } from '../lib/hooks.js';
 import { useI18n } from '../context/I18nContext.jsx';
 import { useToast } from '../context/ToastContext.jsx';
 import site from '../site.js';
-import ItemImage from '../components/catalog/ItemImage.jsx';
+import ItemImage, { isWikiImg } from '../components/catalog/ItemImage.jsx';
+import { useCommonsGallery } from '../lib/useWikiImage.js';
 import ItemCard from '../components/catalog/ItemCard.jsx';
 import PriceTag from '../components/catalog/PriceTag.jsx';
 import FavoriteButton from '../components/catalog/FavoriteButton.jsx';
@@ -21,6 +22,7 @@ export default function ItemDetail() {
   const { push } = useToast();
   const { data: x, error, loading, reload } = useFetch(`/api/items/${encodeURIComponent(id)}`);
   const [active, setActive] = useState(0);
+  const commons = useCommonsGallery(x?.wiki);
   useDocumentTitle(x ? tx(x.title) : null, x ? tx(x.desc) : undefined);
 
   if (loading) return <DetailSkeleton />;
@@ -33,7 +35,8 @@ export default function ItemDetail() {
     );
   }
   const cat = site.categories.find((c) => c.id === x.category);
-  const images = [x.image, ...(x.gallery || [])].filter(Boolean);
+  const own = (x.gallery || []).filter((g) => !/loremflickr|picsum/.test(g) || !isWikiImg(x.image));
+  const images = [...new Set([x.image, ...own, ...(commons || [])].filter(Boolean))].slice(0, 5);
   const share = async () => {
     try { await navigator.clipboard.writeText(window.location.href); push(t('item.copied')); } catch { push(window.location.href, 'info'); }
   };
@@ -43,12 +46,12 @@ export default function ItemDetail() {
       <Link to="/catalog" className="btn btn--ghost btn--sm">{t('item.back')}</Link>
       <div className="detail__top">
         <div className="gallery">
-          <ItemImage src={images[active]} alt={tx(x.title)} className="gallery__main" icon={cat?.icon} label={tx(x.title)} eager />
+          <ItemImage wiki={active === 0 && !isWikiImg(x.image) ? x.wiki : undefined} src={images[active] || images[0]} alt={tx(x.title)} className="gallery__main" icon={cat?.icon} label={tx(x.title)} eager />
           {images.length > 1 && (
             <div className="gallery__thumbs">
               {images.map((src, i) => (
                 <button key={src} className={i === active ? 'active' : ''} onClick={() => setActive(i)} aria-label={`${i + 1}`}>
-                  <ItemImage src={src} alt="" icon={cat?.icon} />
+                  <ItemImage wiki={i === 0 && !isWikiImg(x.image) ? x.wiki : undefined} src={src} alt="" icon={cat?.icon} />
                 </button>
               ))}
             </div>

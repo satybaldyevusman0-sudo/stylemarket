@@ -4,22 +4,30 @@
 const API = 'https://en.wikipedia.org/w/api.php';
 const isBrowser = typeof window !== 'undefined';
 
-async function call(params, ms = 7000) {
+const COMMONS = 'https://commons.wikimedia.org/w/api.php';
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// 429 (көп суроо) болсо бир аз күтүп, кайра аракет кылат
+async function call(params, ms = 7000, api = API, tries = 3) {
   const qs = new URLSearchParams({ format: 'json', formatversion: '2', origin: '*', ...params });
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), ms);
-  try {
-    const r = await fetch(`${API}?${qs}`, {
-      signal: ctrl.signal,
-      headers: isBrowser ? {} : { 'User-Agent': 'KG-exam-sites/1.0 (https://vercel.com; educational demo)', 'Api-User-Agent': 'KG-exam-sites/1.0' }
-    });
-    if (!r.ok) return null;
-    return await r.json();
-  } catch {
-    return null;
-  } finally {
-    clearTimeout(timer);
+  for (let i = 0; i < tries; i++) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), ms);
+    try {
+      const r = await fetch(`${api}?${qs}`, {
+        signal: ctrl.signal,
+        headers: isBrowser ? {} : { 'User-Agent': 'KG-exam-sites/1.0 (https://vercel.com; educational demo)', 'Api-User-Agent': 'KG-exam-sites/1.0' }
+      });
+      if (r.status === 429 || r.status >= 500) { await sleep(800 * (i + 1) + Math.random() * 600); continue; }
+      if (!r.ok) return null;
+      return await r.json();
+    } catch {
+      await sleep(400);
+    } finally {
+      clearTimeout(timer);
+    }
   }
+  return null;
 }
 
 // allowLogo = false болсо логотип, желек жана SVG сүрөттөр өткөрүлүп жиберилет (сүрөт керек)
@@ -44,6 +52,23 @@ export async function wikiImage(query, size = 900) {
   const found = await call({ action: 'query', generator: 'search', gsrsearch: query, gsrlimit: '5', gsrnamespace: '0', ...base });
   const pages = (found?.query?.pages || []).sort((x, y) => (x.index || 0) - (y.index || 0));
   return pickThumb(pages, allowLogo);
+}
+
+// Wikimedia Commons'тон ошол темадагы кошумча сүрөттөр (галерея үчүн)
+export async function commonsImages(query, n = 4, size = 800) {
+  if (!query || query.startsWith('logo:')) return [];
+  const q = query.replace(/\s*\([^)]*\)\s*/g, ' ').trim();
+  const res = await call({ action: 'query', generator: 'search', gsrsearch: `${q} filetype:bitmap`, gsrnamespace: '6', gsrlimit: '15', prop: 'imageinfo', iiprop: 'url|mime', iiurlwidth: String(size) }, 7000, COMMONS, 2);
+  const pages = (res?.query?.pages || []).sort((a, b) => (a.index || 0) - (b.index || 0));
+  const out = [];
+  for (const p of pages) {
+    const ii = p.imageinfo?.[0];
+    if (!ii || !/image\/(jpeg|png|webp)/.test(ii.mime || '')) continue;
+    if (/logo|flag|map|coat|diagram|icon/i.test(p.title)) continue;
+    out.push(ii.thumburl || ii.url);
+    if (out.length >= n) break;
+  }
+  return out;
 }
 
 // Бир нече сурамды чектелген параллелдүүлүк менен чечүү

@@ -27,6 +27,7 @@ export default function publicRoutes(r) {
 
   // Сайттын жалпы маалыматы (категориялар, статистика)
   r.get('/api/site', async (ctx) => {
+    await db.healImages();
     const items = await db.all('items');
     const counts = items.reduce((m, x) => ({ ...m, [x.category]: (m[x.category] || 0) + 1 }), {});
     send(ctx.res, 200, {
@@ -36,6 +37,7 @@ export default function publicRoutes(r) {
   });
 
   r.get('/api/items', async (ctx) => {
+    await db.healImages();
     const q = ctx.query;
     const m = ratingMap(await db.all('reviews'));
     let items = (await db.all('items')).map((x) => withRating(x, m));

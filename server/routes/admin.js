@@ -34,7 +34,7 @@ function itemInput(body) {
   if (d.oldPrice != null && d.price != null && d.oldPrice <= d.price) throw new HttpError(422, 'Форманы текшериңиз', { oldPrice: 'Эски баа жаңы баадан чоң болушу керек' });
   return {
     title: cleanI18n(d.title), category: d.category, price: d.price ?? 0, oldPrice: d.oldPrice ?? null, currency: d.currency,
-    image: d.image || '', desc: cleanI18n(d.desc), brand: d.brand || '', badge: d.badge || '', stock: d.stock ?? null,
+    image: d.image || '', ...(d.image ? { imageSource: 'admin' } : {}), desc: cleanI18n(d.desc), brand: d.brand || '', badge: d.badge || '', stock: d.stock ?? null,
     buyable: d.buyable, tags: d.tags.map((x) => x.trim()), specs: d.specs.map(([k, v]) => [k.trim(), v.trim()])
   };
 }

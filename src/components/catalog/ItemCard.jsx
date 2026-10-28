@@ -1,7 +1,7 @@
 import { Link } from '../../lib/router.jsx';
 import { useI18n } from '../../context/I18nContext.jsx';
 import site from '../../site.js';
-import ItemImage from './ItemImage.jsx';
+import ItemImage, { isWikiImg } from './ItemImage.jsx';
 import FavoriteButton from './FavoriteButton.jsx';
 import PriceTag from './PriceTag.jsx';
 import AddToCartButton from './AddToCartButton.jsx';
@@ -14,7 +14,7 @@ export default function ItemCard({ item }) {
   return (
     <article className="card item-card">
       <Link to={url} className="item-card__media" aria-label={tx(item.title)}>
-        <ItemImage src={item.image} alt={tx(item.title)} icon={cat?.icon} label={tx(item.title)} />
+        <ItemImage wiki={isWikiImg(item.image) ? undefined : item.wiki} src={item.image} alt={tx(item.title)} icon={cat?.icon} label={tx(item.title)} />
       </Link>
       <div className="item-card__fav"><FavoriteButton id={item.id} /></div>
       {item.badge && <span className="item-card__badge">{tx(item.badge)}</span>}

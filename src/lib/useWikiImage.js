@@ -1,6 +1,6 @@
 // Браузерде Wikipedia API'ден сүрөт алуу (категориялар жана башкы баннер үчүн), localStorage кэш менен.
 import { useEffect, useState } from 'react';
-import { wikiImage } from '../../site/wiki.js';
+import { wikiImage, commonsImages } from '../../site/wiki.js';
 
 const KEY = 'wikiimg:v1';
 const read = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } };
@@ -21,4 +21,18 @@ export function useWikiImage(query, size = 900) {
     return () => { alive = false; };
   }, [id]);
   return url; // undefined = жүктөлүүдө, null = табылган жок
+}
+
+// Толук барактагы галерея үчүн Wikimedia Commons'тон кошумча сүрөттөр (кэш менен)
+const gmem = {};
+export function useCommonsGallery(query) {
+  const [list, setList] = useState(query ? gmem[query] : undefined);
+  useEffect(() => {
+    if (!query) { setList(undefined); return; }
+    if (gmem[query]) { setList(gmem[query]); return; }
+    let alive = true;
+    commonsImages(query, 4).then((r) => { gmem[query] = r; if (alive) setList(r); });
+    return () => { alive = false; };
+  }, [query]);
+  return list;
 }
